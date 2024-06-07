@@ -56,11 +56,13 @@ app.post('/submit', async (req, res) => {
 
     if(nextQuestionResult.rows[0].next_question_id!==null){
       const nextQuestionId = nextQuestionResult.rows[0].next_question_id
+      await pool.query('UPDATE users SET status =$1 WHERE id = $2', [nextQuestionId,id]);
       res.json({ next:true,nextQuestionId ,id});
     }else{
     
       const result = await pool.query('SELECT SUM(score) FROM answers WHERE user_id=$1', [id]);
-
+     
+       await pool.query('UPDATE users SET score =$1 ,status=0 WHERE id = $2', [result.rows[0].sum,id]);
       const score = result.rows[0].sum
       res.json({ next:false,score ,id});
     }
@@ -79,7 +81,7 @@ app.post('/submitUser', async (req, res) => {
     
       // console.log(user.rows[0].score);
       if(user.rows.length!==0){
-      res.json({ user:true,score: user.rows[0].score});
+      res.json({ user:true,score: user.rows[0].score,status:user.rows[0].status,id:user.rows[0].id});
     }else{
    const user = await pool.query('INSERT INTO users (username,email,phone) VALUES ($1, $2,$3) RETURNING id', [name,email,phone]);
     

@@ -27,11 +27,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = await response.json();
    
     if(data.user){
+      if(data.status===0){
       questionText.textContent = "You have completed this survey!";
       optionsContainer.innerHTML = "";
       const scoretext = document.createElement("h2")
       scoretext.textContent="Score = "+data.score
-      optionsContainer.appendChild(scoretext)
+      optionsContainer.appendChild(scoretext)}else{
+        loadQuestion(data.status,data.id);
+      }
     }else{
       
     loadQuestion(currentQuestionId,data.id);
