@@ -52,8 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
         button.classList.add("option");
         button.textContent = option.option_text;
         button.addEventListener("click", () =>{
-  
-          submitAnswer(questionId, option.option_text,option.score,id);}
+       
+          submitAnswer(questionId,id,option.id);}
         );
         optionsContainer.appendChild(button);
       });
@@ -62,13 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => questionContainer.classList.remove("fade-in"), 500);
     };
 
-    const submitAnswer = async (questionId, answer,score,id) => {
+    const submitAnswer = async (questionId,id,option_id) => {
       const response = await fetch("/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ questionId, answer ,score,id}),
+        body: JSON.stringify({ questionId,id,option_id}),
       });
     
       const data = await response.json();

@@ -27,6 +27,11 @@ app.get('/', (req, res) => {
 
 });
 
+
+
+
+
+
 // Get the question
 app.get('/question/:id', async (req, res) => {
   const questionId = req.params.id;
@@ -46,11 +51,12 @@ app.get('/question/:id', async (req, res) => {
 
 // Handle form submission and get next question
 app.post('/submit', async (req, res) => {
-  const { questionId, answer ,score,id} = req.body;
+  const { questionId,id,option_id} = req.body;
 
   try {
-    await pool.query('INSERT INTO answers (question_id, answer_text,score,user_id) VALUES ($1, $2,$3,$4)', [questionId, answer,score,id]);
-    const nextQuestionResult = await pool.query('SELECT next_question_id FROM options WHERE question_id = $1 AND option_text = $2', [questionId, answer]);
+    console.log(option_id);
+    await pool.query('INSERT INTO answers (question_id,user_id,option_id) VALUES ($1, $2,$3)', [questionId,id,option_id]);
+    const nextQuestionResult = await pool.query('SELECT next_question_id FROM options WHERE question_id = $1 AND id= $2', [questionId, option_id]);
     
 
 
@@ -60,7 +66,7 @@ app.post('/submit', async (req, res) => {
       res.json({ next:true,nextQuestionId ,id});
     }else{
     
-      const result = await pool.query('SELECT SUM(score) FROM answers WHERE user_id=$1', [id]);
+      const result = await pool.query('SELECT SUM(options.score) FROM answers inner join options on answers.option_id = options.id where answers.user_id = $1', [id]);
      
        await pool.query('UPDATE users SET score =$1 ,status=0 WHERE id = $2', [result.rows[0].sum,id]);
       const score = result.rows[0].sum

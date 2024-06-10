@@ -1,0 +1,94 @@
+
+-- Create tables 
+
+CREATE TABLE questions (
+    id SERIAL PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    next_question_id INT
+);
+
+CREATE TABLE options (
+    id SERIAL PRIMARY KEY,
+    question_id INT,
+    option_text TEXT NOT NULL,
+    next_question_id INT,
+    FOREIGN KEY (question_id) REFERENCES questions(id)
+);
+
+CREATE TABLE answers (
+    id SERIAL PRIMARY KEY,
+    question_id INT,
+    user_id INT,
+    option_id INT,
+    FOREIGN KEY (question_id) REFERENCES questions(id),    
+    FOREIGN KEY (users_id) REFERENCES users(id),
+    FOREIGN KEY (option_id) REFERENCES options(id)
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR,
+    email VARCHAR,
+    phone VARCHAR,
+    score INT,
+    status INT,
+);
+
+
+-- Insert questions 
+INSERT INTO questions (question_text, next_question_id) VALUES
+('What is your favorite programming language?', NULL),
+('Why do you like this language?', NULL),
+('What type of projects do you typically work on?', NULL),
+('What is your experience level with programming?', NULL),
+('What is your preferred development environment?', NULL),
+('Do you contribute to open source projects?', NULL),
+('How do you stay updated with the latest programming trends?', NULL),
+('What is your preferred method of learning new technologies?', NULL),
+('Do you participate in coding competitions?', NULL),
+('What is your preferred source of documentation?', NULL),
+('Which programming paradigm do you prefer?', NULL),
+('Do you use version control systems?', NULL);
+
+-- Insert corresponding options
+INSERT INTO options (question_id, option_text, next_question_id) VALUES
+(1, 'Python', 2),
+(1, 'JavaScript', 2),
+(1, 'Java', 2),
+(1, 'C++', 2),
+(2, 'Ease of learning', 3),
+(2, 'Community support', 3),
+(2, 'Libraries and frameworks', 3),
+(2, 'Performance', 3),
+(3, 'Web development', 4),
+(3, 'Mobile development', 4),
+(3, 'Data science', 4),
+(3, 'Game development', 4),
+(4, 'Beginner', 5),
+(4, 'Intermediate', 5),
+(4, 'Advanced', 5),
+(5, 'IDE', 6),
+(5, 'Text editor', 6),
+(5, 'Online code editor', 6),
+(6, 'Yes', 7),
+(6, 'No', 7),
+(7, 'Blogs', 8),
+(7, 'Podcasts', 8),
+(7, 'Conferences', 8),
+(7, 'Online courses', 8),
+(8, 'Reading documentation', 9),
+(8, 'Watching tutorials', 9),
+(8, 'Building projects', 9),
+(8, 'Attending workshops', 9),
+(9, 'Yes', 10),
+(9, 'No', 10),
+(10, 'Official documentation', 11),
+(10, 'Community-driven sites', 11),
+(10, 'Books', 11),
+(10, 'Video tutorials', 11),
+(11, 'Object-oriented programming', 12),
+(11, 'Functional programming', 12),
+(11, 'Procedural programming', 12),
+(11, 'Event-driven programming', 12),
+(12, 'Yes', NULL),
+(12, 'No', NULL);
